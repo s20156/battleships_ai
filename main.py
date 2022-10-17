@@ -45,11 +45,18 @@ class Battleships ():
                 self.board_1[position_start[0]][position_end[1] + 1] = 1
         
 
+    def shoot(self, position, player):
+        if self.board_1[position[0]][position[1]] == 1:
+            self.board_1[position[0]][position[1]] = 2
+
+
 
 def main():
     battleships = Battleships(["1", "2"])
     battleships.add_ship(1, 1, (1,3))
     battleships.add_big_ship(3, 1, (4,5), (4,3))
+    battleships.add_big_ship(2, 1, (2,2), (3,2))
+    battleships.shoot((2,2), 2)
     battleships.get_board()
 
 main()
