@@ -50,6 +50,12 @@ class Battleships ():
             self.board_1[position[0]][position[1]] = 2
 
 
+##############
+# ship codes:
+# 1 = there is a ship there
+# 2 = ship hit
+# 3 = TODO = ship sunken
+
 
 def main():
     battleships = Battleships(["1", "2"])
