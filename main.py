@@ -31,36 +31,69 @@ class Battleships(TwoPlayerGame):
         for row in self.board_2:
             print(row)
 
-    def add_ship(self, ship_class, player, position):
-        if ship_class > 1:
-            pass
-        else:
+    def add_ship(self, player, position):
+        if player == 1:
             self.board_1[position[0]][position[1]] = 1
+        elif player == 2:
+            self.board_2[position[0]][position[1]] = 1
 
     def add_big_ship(self, ship_class, player, position_start, position_end):
         if abs(position_end[0] - position_start[0]) != ship_class - 1 and abs(
                 position_end[1] - position_start[1]) != ship_class - 1:
             return
+        
+        board = self.board_1
 
-        self.board_1[position_start[0]][position_start[1]] = 1
-        self.board_1[position_end[0]][position_end[1]] = 1
+        if player == 2:
+            board = self.board_2
+
+        board[position_start[0]][position_start[1]] = 1
+        board[position_end[0]][position_end[1]] = 1
 
         print(position_start[1], position_end[1])
 
         if position_start[0] != position_end[0]:
             if position_start[0] > position_end[0]:
-                self.board_1[position_start[0] - 1][position_start[1]] = 1
+                board[position_start[0] - 1][position_start[1]] = 1
             else:
-                self.board_1[position_start[0] + 1][position_start[1]] = 1
+                board[position_start[0] + 1][position_start[1]] = 1
         else:
             if position_start[1] > position_end[1]:
-                self.board_1[position_start[0]][position_start[1] - 1] = 1
+                board[position_start[0]][position_start[1] - 1] = 1
             else:
-                self.board_1[position_start[0]][position_end[1] + 1] = 1
+                board[position_start[0]][position_end[1] + 1] = 1
+
+    def evaluate_shot(self, position, board):
+        if board[position[0]][position[1]] == 1:
+            self.check_surroundings(position, board)
+        elif board[position[0]][position[1]] == 0:
+            board[position[0]][position[1]] = 4
+
+    def check_surroundings(self, position, board):
+        if board[position[0] + 1][position[1]] == 1 or board[position[0] - 1][position[1]] == 1 or board[position[0]][position[1] + 1] == 1 or board[position[0]][position[1] - 1] == 1:
+            board[position[0]][position[1]] = 2
+        else:
+            board[position[0]][position[1]] = 3
+            if board[position[0] + 1][position[1]] == 2:
+                board[position[0] + 1][position[1]] = 3
+                self.check_surroundings((position[0] + 1, position[1]), board)
+            elif board[position[0] - 1][position[1]] == 2:
+                board[position[0] - 1][position[1]] = 3
+                self.check_surroundings((position[0] - 1, position[1]), board)
+            elif board[position[0]][position[1] + 1] == 2:
+                board[position[0]][position[1] + 1] = 3
+                self.check_surroundings((position[0], position[1] + 1), board)
+            elif board[position[0]][position[1] - 1] == 2:
+                board[position[0]][position[1] - 1] = 3
+                self.check_surroundings((position[0], position[1] - 1), board)
 
     def shoot(self, position, player):
-        if self.board_1[position[0]][position[1]] == 1:
-            self.board_1[position[0]][position[1]] = 2
+        board = self.board_1
+        if player == 2:
+            board = self.board_2
+        self.evaluate_shot(position, board)
+
+
 
     def win(self):
         return self.board_1 or self.board_2 == 0 or 2
@@ -71,14 +104,17 @@ class Battleships(TwoPlayerGame):
 # 1 = there is a ship there
 # 2 = ship hit
 # 3 = TODO = ship sunken
+# 4 = missed shot
 
 
 def main():
     battleships = Battleships(["1", "2"])
-    battleships.add_ship(1, 1, (1, 3))
+    battleships.add_ship(1, (1, 3))
     battleships.add_big_ship(3, 1, (4, 5), (4, 3))
-    battleships.add_big_ship(2, 1, (2, 2), (3, 2))
+    battleships.add_big_ship(2, 2, (2, 2), (3, 2))
     battleships.shoot((2, 2), 2)
+    battleships.shoot((3, 2), 2)
+    battleships.shoot((1, 3), 1)
     battleships.get_board()
 
 
