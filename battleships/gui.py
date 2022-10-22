@@ -1,14 +1,24 @@
 from engine import Game
 
-""" setting up pygame """
+
 import pygame
+""" 
+Game initialization 
+pygame.init() : initialize imported pygame modules
+pygame.font.init() : initialize font modules
+pygame.display.set_caption("Battleship") : window name
+myfont = pygame.font.SysFont("fresansttf", 100) :font
+"""
 
 pygame.init()
 pygame.font.init()
 pygame.display.set_caption("Battleship")
 myfont = pygame.font.SysFont("fresansttf", 100)
 
-""" global variables """
+""" Global variables
+    needed for creating the grid and the window,
+    as well as definig the AI player count.
+"""
 SQ_SIZE = 45
 H_MARGIN = SQ_SIZE * 4
 V_MARGIN = SQ_SIZE
@@ -19,7 +29,7 @@ INDENT = 10
 HUMAN1 = False
 HUMAN2 = False
 
-""" colors """
+""" Colors """
 GREY = (40, 50, 60)
 WHITE = (255, 250, 250)
 GREEN = (50, 200, 150)
@@ -29,8 +39,11 @@ ORANGE = (250, 140, 20)
 COLORS = {"U": GREY, "M": BLUE, "H": ORANGE, "S": RED}
 
 
-""" function to draw a grid """
+
 def draw_grid(player, left=0, top=0, search=False):
+    """ Drawing a grid based on position
+        on the screen and a one square pixel size
+    """
     for i in range(100):
         x = left + i % 10 * SQ_SIZE
         y = top + i // 10 * SQ_SIZE
@@ -42,8 +55,8 @@ def draw_grid(player, left=0, top=0, search=False):
             pygame.draw.circle(SCREEN, COLORS[player.search[i]], (x, y), radius=SQ_SIZE // 4)
 
 
-""" function to draw ships onto the grid """
 def draw_ships(player, left=0, top=0):
+    """ Modeling and drawing the ships """
     for ship in player.ships:
         x = left + ship.col * SQ_SIZE + INDENT
         y = top + ship.row * SQ_SIZE + INDENT
@@ -58,21 +71,29 @@ def draw_ships(player, left=0, top=0):
 
 
 game = Game(HUMAN1, HUMAN2)
-
-""" pygame loop """
+""" New instance of a game
+    
+    animating = True
+    pausing = False
+    while animating: loop for all the possible moves while the game is ongoing   
+"""
 animating = True
 pausing = False
 while animating:
 
-    """ track user interaction """
+    """ Tracking user interaction """
     for event in pygame.event.get():
 
-        """ user closes the pygame window """
+        """ Ending the game by closing the window """
         if event.type == pygame.QUIT:
             animating = False
 
-        """ user clicks on mouse """
         if event.type == pygame.MOUSEBUTTONDOWN and not game.over:
+            """ Getting the user mouse-click input by the coordinates
+                x, y = pygame.mouse.get_pos()x, y = pygame.mouse.get_pos()
+                if game.player1_turn : first player turn
+                elif not game.player1_turn : second player turn
+            """
             x, y = pygame.mouse.get_pos()
             if game.player1_turn and x < SQ_SIZE * 10 and y < 10 * SQ_SIZE:
                 row = y // SQ_SIZE
@@ -85,51 +106,58 @@ while animating:
                 index = row * 10 + col
                 game.make_move(index)
 
-        """ user presses key on keyboard """
+        """ Assigning a function to a certain types of action on a keyboard """
         if event.type == pygame.KEYDOWN:
 
-            """" escape key to close the animation """
+            """" Escape key to close the animation """
             if event.key == pygame.K_ESCAPE:
                 animating = False
 
-            """ space bar to pause and unpause the animation """
+            """ Space bar to pause and unpause the animation """
             if event.key == pygame.K_SPACE:
                 pausing = not pausing
 
-            """return key to restart the game"""
+            """ Return key to restart the game """
             if event.key == pygame.K_RETURN:
                 game = Game(HUMAN1, HUMAN2)
 
-    """execution""" 
+    """ Defining all of the GUI elements appearance """ 
     if not pausing:
-        """draw background""" 
+        """ Draw background """ 
         SCREEN.fill(GREY)
 
-        """draw search grids""" 
+        """ Draw search grids """ 
         draw_grid(game.player1, search=True)
         draw_grid(game.player2, search=True, left=(WIDTH - H_MARGIN) // 2 + H_MARGIN,
                   top=(HEIGHT - V_MARGIN) // 2 + V_MARGIN)
 
-        """ draw position grids """
+        """ Draw position grids """
         draw_grid(game.player1, top=(HEIGHT - V_MARGIN) // 2 + V_MARGIN)
         draw_grid(game.player2, left=(WIDTH - H_MARGIN) // 2 + H_MARGIN)
 
-        """draw ships onto position grids""" 
+        """ Draw ships onto position grids """ 
         draw_ships(game.player1, top=(HEIGHT - V_MARGIN) // 2 + V_MARGIN)
         draw_ships(game.player2, left=(WIDTH - H_MARGIN) // 2 + H_MARGIN)
 
-        """ computer moves """
         if not game.over and game.computer_turn:
+            """ AI vs AI implementation 
+                if game.player1_turn:
+                    game.random_ai() : instance of an AI with random moves
+                else:
+                    game.basic_ai() : instance of an AI using checkboard pattern and searching for the neighbours
+            """
             if game.player1_turn:
                 game.random_ai()
             else:
                 game.basic_ai()
-        """game over message"""
+
         if game.over:
+            """ Game over message appearing on the screen"""
             text = "Player " + str(game.result) + " wins!"
             textbox = myfont.render(text, False, GREY, WHITE)
             SCREEN.blit(textbox, (WIDTH // 2 - 240, HEIGHT // 2 - 50))
 
-        """ update screen """
         pygame.time.wait(0)
+        """Setting wait to a value > 0 will postpone the moves by the vaulue in ms"""
         pygame.display.flip()
+        """ Updates all provided data on the screen """
