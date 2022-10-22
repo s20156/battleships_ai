@@ -1,1 +1,2 @@
-easyAI
+pygame
+random
