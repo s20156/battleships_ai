@@ -11,7 +11,8 @@ Realizacja projektu:
 Projekt ma na celu zaproponowanie użytkownikowi filmów, których nie oglądał, a które - bazując na znajomości gustu i poprzez porównanie z innymi użytkownikami - mogą najbardziej lub najmniej Mu się podobać.
 
 Instrukcja:
-Aby uruchomić projekt należy uruchomić plik main.py za pomocą interpretera pythona korzystając z opcji, które narzędzie CLI wyświetli w konsoli.
+TL/DR: wpisz "python3 main.py --help" po instrukcje.
+Aby uruchomić projekt należy uruchomić plik main.py za pomocą interpretera pythona korzystając z flagi --recommend lub --dissuade. Następnie aplikacja zapyta użytkownika o imię i nazwisko osoby, której chcemy polecić lub odradzić tytuły filmów.
 """
 
 
@@ -39,4 +40,5 @@ def recommend(mode, name):
         print("Error: User not in database")
 
 
-if __name__ == '__main__': recommend()
+if __name__ == '__main__':
+    recommend()
