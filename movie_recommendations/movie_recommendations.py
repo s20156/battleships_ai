@@ -1,10 +1,6 @@
-import json
 import numpy as np
-import click
 
-from euclidean_score import euclidean_score
 from pearson_score import pearson_score
-from find_similar_users import find_similar_users
 
 
 # Generate recommendations for a given user
