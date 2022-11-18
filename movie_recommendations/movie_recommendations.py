@@ -1,10 +1,12 @@
 import json
 import numpy as np
+import click
 
 from euclidean_score import euclidean_score
 from pearson_score import pearson_score
 from find_similar_users import find_similar_users
- 
+
+
 # Generate recommendations for a given user
 def generate_recommendations(dataset, user):
     if user not in dataset:
@@ -37,21 +39,3 @@ def generate_recommendations(dataset, user):
     recommendations = [movie for _, movie in movie_ranks]
 
     return recommendations
- 
-if __name__=='__main__':
-    data_file = 'movie_ratings.json'
-
-    with open(data_file, 'r') as f:
-        data = json.loads(f.read())
-
-    user = 'Mateusz Grube'
-    print("\nRecommendations for " + user + ":")
-    movies = generate_recommendations(data, user) 
-    for i, movie in enumerate(movies):
-        print(str(i+1) + '. ' + movie)
-
-    user = 'Cezary Malejka' 
-    print("\nRecommendations for " + user + ":")
-    movies = generate_recommendations(data, user) 
-    for i, movie in enumerate(movies):
-        print(str(i+1) + '. ' + movie)
