@@ -3,18 +3,24 @@ import mediapipe as mp
 import time
 from Gestures import Gestures
 
+"""
+Realizacja projektu:
+* Cezary Malejka
+* Mateusz Grube
+
+Projekt ma na celu przedstawienie działania bibliotek opencv oraz mediapipe w celu zaprezentowania rozpoznawania gestów wykonywanych przez obserwowanego przez kamerę użytkownika.
+
+Instrukcja:
+W celu uruchomienia projektu należy (będąc w katalogu gestrureDetect) użyć komendy
+python3 main.py
+"""
+
 cap = cv.VideoCapture(0)
 mpHands = mp.solutions.hands
-mpRecognizer = mp.tasks.vision.GestureRecognizer
-GestureRecognizerOptions = mp.tasks.vision.GestureRecognizerOptions
-BaseOptions = mp.tasks.BaseOptions
 VisionRunningMode = mp.tasks.vision.RunningMode
 
 hands = mpHands.Hands()
 mpDraw = mp.solutions.drawing_utils
-options = GestureRecognizerOptions(
-    base_options=BaseOptions(model_asset_path='/path/to/model.task'),
-    running_mode=VisionRunningMode.IMAGE)
 
 pTime, cTime = 0, 9
 
